@@ -20,54 +20,31 @@ program
     const header = options.header ? JSON.parse(options.header) : {};
     const body = options.body ? JSON.parse(options.body) : {};
     const query = options.query ? JSON.parse(options.query) : {};
-  
-    if (String(options.method).toLowerCase() === "get") {
-      sendGetRequest(baseUrl, header, query);
-    } else if (String(options.method).toLowerCase() === "post") {
-      sendPostRequest(baseUrl, header, body, query);
-    }
+
+    sendRequest(
+      baseUrl,
+      String(options.method).toLowerCase(),
+      header,
+      body,
+      query
+    );
   });
 
 program.parse();
 
-function sendGetRequest(baseUrl, headers, query) {
-  const url = processQuery(baseUrl, query);
-  axios
-    .get(url, {
-      headers: headers,
-    })
+function sendRequest(baseUrl, method, headers, body, query) {
+  if (method === "get") body = undefined;
+  axios({
+    method: method,
+    url: baseUrl,
+    headers: headers,
+    data: body,
+    params: query,
+  })
     .then((res) => {
       console.log(chalk.blue(JSON.stringify(res.data)));
     })
     .catch((err) => {
       console.log(chalk.red(err));
     });
-}
-
-function sendPostRequest(baseUrl, headers, body, query) {
-  const url = processQuery(baseUrl, query);
-  axios
-    .post(url, body, {
-      headers: headers,
-    })
-    .then((res) => {
-      console.log(chalk.blue(JSON.stringify(res.data)));
-    })
-    .catch((err) => {
-      console.log(chalk.red(err));
-    });
-}
-
-function processQuery(baseUrl, query) {
-  const queryCount = Object.keys(query).length;
-  let counter = 0;
-  if (queryCount) {
-    for (const qKey in query) {
-      if (!counter) baseUrl += `?${qKey}=${query[qKey]}`;
-      else baseUrl += `&${qKey}=${query[qKey]}`;
-      counter++;
-    }
-  }
-
-  return baseUrl;
 }
