@@ -1,0 +1,9 @@
+# Dependency directories
+node_modules/
+
+#editor
+.vscode
+
+#application specific
+flow.txt
+url.txt
