@@ -1,7 +1,11 @@
+// package imports
 import "dotenv/config";
 import axios from "axios";
 import { Command } from "commander";
 import { Chalk } from "chalk";
+
+// local imports
+import { createFile, saveExample } from "./save-examples.js";
 
 const program = new Command();
 const chalk = new Chalk();
@@ -42,7 +46,13 @@ function sendRequest(baseUrl, method, headers, body, query) {
     params: query,
   })
     .then((res) => {
-      console.log(chalk.blue(JSON.stringify(res.data)));
+      const data = JSON.stringify(res.data);
+      const fileName = createFile();
+      if (fileName) {
+        saveExample(fileName, data);
+      } else {
+        console.log(chalk.blue(JSON.stringify(res.data)));
+      }
     })
     .catch((err) => {
       console.log(chalk.red(err));
