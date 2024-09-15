@@ -33,7 +33,8 @@ export const createFile = () => {
 
 export const saveExample = (fileName, response) => {
   const filePath = `${responsePath}/${fileName}`;
-  fs.writeFile(filePath, response, (err) => {
+  const formattedResponse = formatJSON(response);
+  fs.writeFile(filePath, formattedResponse, (err) => {
     if (err) {
       console.log(err);
     } else {
@@ -46,3 +47,34 @@ export const saveExample = (fileName, response) => {
     }
   });
 };
+
+const formatJSON = (json) => {
+  let formattedJSON = "";
+  let tabCount = 0;
+
+  for (let i = 0; i < json.length; i++) {
+    let ch = json[i];
+
+    switch (ch) {
+      case "{":
+      case "[":
+        formattedJSON += ch + "\n" + "  ".repeat(++tabCount);
+        break;
+      case "}":
+      case "]":
+        formattedJSON += "\n" + "  ".repeat(--tabCount) + ch;
+        break;
+      case ",":
+        formattedJSON += ch + "\n" + "  ".repeat(tabCount);
+        break;
+      case ":":
+        formattedJSON += ch + " ";
+        break;
+      default:
+        formattedJSON += ch;
+    }
+  }
+
+  return formattedJSON;
+};
+

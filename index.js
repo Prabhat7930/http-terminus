@@ -58,3 +58,4 @@ function sendRequest(baseUrl, method, headers, body, query) {
       console.log(chalk.red(err));
     });
 }
+
