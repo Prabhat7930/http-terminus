@@ -1,9 +1,13 @@
-# Dependency directories
+# dependency directories
 node_modules/
 
-#editor
+# application directories
+request/
+response/
+
+# editor
 .vscode
 
-#application specific
+# application specific
 flow.txt
 url.txt
